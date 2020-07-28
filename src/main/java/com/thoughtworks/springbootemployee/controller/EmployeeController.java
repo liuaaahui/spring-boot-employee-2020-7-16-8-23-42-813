@@ -14,6 +14,7 @@ public class EmployeeController {
 
     private static final String ID_COULD_NOT_BE_SET = "ID could not be set";
     private static final String SUCCESS = "success";
+    public static final String EMPLOYEE_NOT_FOUND = "employee not found";
 
     @GetMapping
     public List<Employee> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
@@ -46,5 +47,31 @@ public class EmployeeController {
         }
         EmployeeData.addEmployee(employee);
         return SUCCESS;
+    }
+
+    @PutMapping("/{employeeID}")
+    public String updateEmployee(@PathVariable Integer employeeID, @RequestBody Employee employee) {
+        Employee employeeInDatabase = findEmployee(employeeID);
+        if (employeeInDatabase == EmployeeData.emptyEmployee) {
+            return EMPLOYEE_NOT_FOUND;
+        }
+        updateAttributeOfEmployee(employeeInDatabase, employee);
+        return SUCCESS;
+    }
+
+    public void updateAttributeOfEmployee(Employee employeeInDatabase, Employee employee) {
+        if (employee.getName() != null) {
+            employeeInDatabase.setName(employee.getName());
+        }
+        if (employee.getGender() != null) {
+            employeeInDatabase.setGender(employee.getGender());
+        }
+        if (employee.getAge() != null) {
+            employeeInDatabase.setAge(employee.getAge());
+        }
+        if (employee.getSalary() != null) {
+            employeeInDatabase.setSalary(employee.getSalary());
+        }
+
     }
 }
