@@ -7,14 +7,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
     @GetMapping
-    public List<Employee> getEmployees() {
-        return EmployeeData.employees;
+    public List<Employee> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
+        if (page == null || pageSize == null) {
+            return EmployeeData.employees;
+        }
+        return EmployeeData.employees.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
     }
 
     @GetMapping("/{employeeID}")
