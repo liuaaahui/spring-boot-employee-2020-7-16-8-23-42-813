@@ -8,6 +8,7 @@ import java.util.List;
 
 public class CompanyData {
     public static List<Company> companies = new ArrayList<>();
+    public static Company emptyCompany;
 
     static {
         companies.add(new Company(1, "oocl"));
@@ -23,5 +24,6 @@ public class CompanyData {
 
         companies.get(0).setEmployees(employeesOfOOCL);
         companies.get(1).setEmployees(employeesOfBlibli);
+        emptyCompany = new Company(null, null);
     }
 }
