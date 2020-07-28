@@ -27,10 +27,7 @@ public class CompanyController {
 
     @GetMapping("/{companyID}")
     public Company getCompany(@PathVariable Integer companyID) {
-        return CompanyData.companies.stream()
-                .filter(company -> company.getId().equals(companyID))
-                .findFirst()
-                .orElse(CompanyData.emptyCompany);
+        return findCompany(companyID);
     }
 
     @GetMapping("/{companyID}/employees")
@@ -52,10 +49,7 @@ public class CompanyController {
 
     @PutMapping("/{companyID}")
     public String updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
-        Company companyInDatabase = CompanyData.companies.stream()
-                .filter(company -> company.getId().equals(companyID))
-                .findFirst()
-                .orElse(CompanyData.emptyCompany);
+        Company companyInDatabase = findCompany(companyID);
         if (companyInDatabase == CompanyData.emptyCompany) {
             return COMPANY_NOT_FIND;
         }
@@ -63,5 +57,22 @@ public class CompanyController {
             companyInDatabase.setCompanyName(companyInfo.getCompanyName());
         }
         return SUCCESS;
+    }
+
+    @DeleteMapping("/{companyID}")
+    public String deleteCompany(@PathVariable Integer companyID) {
+        Company company = findCompany(companyID);
+        if (company == CompanyData.emptyCompany) {
+            return COMPANY_NOT_FIND;
+        }
+        CompanyData.companies.remove(company);
+        return SUCCESS;
+    }
+
+    public Company findCompany(Integer ID) {
+        return CompanyData.companies.stream()
+                .filter(company -> company.getId().equals(ID))
+                .findFirst()
+                .orElse(CompanyData.emptyCompany);
     }
 }
