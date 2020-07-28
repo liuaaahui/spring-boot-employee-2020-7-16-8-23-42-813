@@ -1,13 +1,13 @@
 package com.thoughtworks.springbootemployee.model;
 
 public class Employee {
-    private int id;
-    private int age;
+    private Integer id;
+    private Integer age;
     private String name;
     private String gender;
-    private double salary;
+    private Double salary;
 
-    public Employee(int id, int age, String name, String gender, double salary) {
+    public Employee(Integer id, Integer age, String name, String gender, Double salary) {
         this.id = id;
         this.age = age;
         this.name = name;
@@ -15,23 +15,23 @@ public class Employee {
         this.salary = salary;
     }
 
-    Employee(){
+    public Employee(){
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
@@ -51,11 +51,11 @@ public class Employee {
         this.gender = gender;
     }
 
-    public double getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setSalary(double salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 }
