@@ -9,6 +9,9 @@ import java.util.List;
 public class CompanyData {
     public static List<Company> companies = new ArrayList<>();
     public static Company emptyCompany;
+    private static transient int CompanyIDCount;
+
+    public static final int DEFAULT_COMPANY_COUNT = 2;
 
     static {
         companies.add(new Company(1, "oocl"));
@@ -25,5 +28,11 @@ public class CompanyData {
         companies.get(0).setEmployees(employeesOfOOCL);
         companies.get(1).setEmployees(employeesOfBlibli);
         emptyCompany = new Company(null, null);
+        CompanyIDCount = DEFAULT_COMPANY_COUNT;
+    }
+
+    public static synchronized void addCompany(Company company) {
+        company.setId(++CompanyIDCount);
+        companies.add(company);
     }
 }

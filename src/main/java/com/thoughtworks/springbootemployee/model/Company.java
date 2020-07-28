@@ -13,6 +13,9 @@ public class Company {
         this.companyName = companyName;
     }
 
+    public Company() {
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

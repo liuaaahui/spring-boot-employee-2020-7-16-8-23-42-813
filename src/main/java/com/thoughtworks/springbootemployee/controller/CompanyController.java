@@ -3,10 +3,7 @@ package com.thoughtworks.springbootemployee.controller;
 import com.thoughtworks.springbootemployee.data.CompanyData;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
@@ -15,6 +12,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/companies")
 public class CompanyController {
+
+    public static final String ID_COULD_NOT_BE_SET = "ID could not be set";
+    public static final String SUCCESS = "success";
+
     @GetMapping
     public List<Company> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
         if (page == null || pageSize == null) {
@@ -39,4 +40,12 @@ public class CompanyController {
                 .orElse(CompanyData.emptyCompany).getEmployees();
     }
 
+    @PostMapping
+    public String addCompany(@RequestBody Company company) {
+        if (company.getId() != null) {
+            return ID_COULD_NOT_BE_SET;
+        }
+        CompanyData.addCompany(company);
+        return SUCCESS;
+    }
 }
