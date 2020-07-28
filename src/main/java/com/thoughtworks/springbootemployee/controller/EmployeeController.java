@@ -59,6 +59,16 @@ public class EmployeeController {
         return SUCCESS;
     }
 
+    @DeleteMapping("/{employeeID}")
+    public String deleteEmployee(@PathVariable Integer employeeID) {
+        Employee employee = findEmployee(employeeID);
+        if (employee == EmployeeData.emptyEmployee) {
+            return EMPLOYEE_NOT_FOUND;
+        }
+        EmployeeData.employees.remove(employee);
+        return SUCCESS;
+    }
+
     public void updateAttributeOfEmployee(Employee employeeInDatabase, Employee employee) {
         if (employee.getName() != null) {
             employeeInDatabase.setName(employee.getName());
