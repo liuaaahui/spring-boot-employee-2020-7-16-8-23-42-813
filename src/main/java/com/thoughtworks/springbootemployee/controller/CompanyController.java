@@ -26,5 +26,11 @@ public class CompanyController {
                 .orElse(CompanyData.emptyCompany);
     }
 
-
+    @GetMapping("/{companyID}/employees")
+    public List<Employee> getEmployee(@PathVariable Integer companyID) {
+        return CompanyData.companies.stream()
+                .filter(company -> company.getId().equals(companyID))
+                .findFirst()
+                .orElse(CompanyData.emptyCompany).getEmployees();
+    }
 }
