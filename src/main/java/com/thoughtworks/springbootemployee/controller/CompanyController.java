@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/companies")
 public class CompanyController {
 
-    public static final String ID_COULD_NOT_BE_SET = "ID could not be set";
-    public static final String SUCCESS = "success";
+    private static final String ID_COULD_NOT_BE_SET = "ID could not be set";
+    private static final String SUCCESS = "success";
+    private static final String COMPANY_NOT_FIND = "company not find";
 
     @GetMapping
     public List<Company> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
@@ -46,6 +47,21 @@ public class CompanyController {
             return ID_COULD_NOT_BE_SET;
         }
         CompanyData.addCompany(company);
+        return SUCCESS;
+    }
+
+    @PutMapping("/{companyID}")
+    public String updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
+        Company companyInDatabase = CompanyData.companies.stream()
+                .filter(company -> company.getId().equals(companyID))
+                .findFirst()
+                .orElse(CompanyData.emptyCompany);
+        if (companyInDatabase == CompanyData.emptyCompany) {
+            return COMPANY_NOT_FIND;
+        }
+        if (companyInfo.getCompanyName() != null) {
+            companyInDatabase.setCompanyName(companyInfo.getCompanyName());
+        }
         return SUCCESS;
     }
 }

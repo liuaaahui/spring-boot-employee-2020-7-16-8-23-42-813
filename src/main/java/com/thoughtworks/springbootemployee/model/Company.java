@@ -5,8 +5,8 @@ import java.util.List;
 public class Company {
     private Integer id;
     private String companyName;
+    private Integer employeesNumber;
     private List<Employee> employees;
-    private Integer empoyeesNumber;
 
     public Company(Integer id, String companyName) {
         this.id = id;
@@ -14,6 +14,14 @@ public class Company {
     }
 
     public Company() {
+    }
+
+    public Integer getEmployeesNumber() {
+        return employeesNumber;
+    }
+
+    public void setEmployeesNumber(Integer employeesNumber) {
+        this.employeesNumber = employeesNumber;
     }
 
     public void setId(Integer id) {
@@ -26,7 +34,7 @@ public class Company {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
-        this.empoyeesNumber = this.employees.size();
+        this.employeesNumber = this.employees.size();
     }
 
     public List<Employee> getEmployees() {
