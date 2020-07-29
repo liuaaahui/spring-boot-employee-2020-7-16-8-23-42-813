@@ -43,4 +43,10 @@ public class CompanyService {
         company.setCompanyName(updatedCompany.getCompanyName());
         return company;
     }
+
+    public Company deleteCompany(Integer id) {
+        Company company = getCompany(id);
+        companyRepository.getCompanies().remove(company);
+        return company;
+    }
 }
