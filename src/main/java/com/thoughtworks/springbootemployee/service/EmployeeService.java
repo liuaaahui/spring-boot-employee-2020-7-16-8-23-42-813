@@ -34,4 +34,9 @@ public class EmployeeService {
         return employeeRepository.getEmployees().stream().filter(employee -> employee.getId().equals(id)).findFirst().orElse(null);
     }
 
+    public Employee addEmployee(Employee employee) {
+        employee.setId(employeeRepository.getEmployees().size());
+        employeeRepository.getEmployees().add(employee);
+        return employee;
+    }
 }
