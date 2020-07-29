@@ -19,8 +19,6 @@ import java.util.List;
 public class CompanyController {
 
     private static final String ID_COULD_NOT_BE_SET = "ID could not be set";
-    private static final String SUCCESS = "success";
-    private static final String COMPANY_NOT_FIND = "company not find";
     public static final String NOT_EXIST = "not exist";
     private final CompanyService companyService;
 
@@ -72,7 +70,7 @@ public class CompanyController {
     public ResultBean<Company> deleteCompany(@PathVariable Integer companyID) {
         Company company = companyService.deleteCompany(companyID);
         if (company == null) {
-            return ResultBean.error(0, NOT_EXIST);
+            return ResultBean.error(ResultBean.ERROR_CODE, NOT_EXIST);
         }
         return ResultBean.success(company);
     }

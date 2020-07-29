@@ -17,10 +17,6 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    private static final String ID_COULD_NOT_BE_SET = "ID could not be set";
-    private static final String SUCCESS = "success";
-    public static final String EMPLOYEE_NOT_FOUND = "employee not found";
-    public static final String CREATION_FAILED = "Creation failed";
     public static final String NOT_EXIST = "not exist";
     public final EmployeeService employeeService;
 
@@ -63,7 +59,7 @@ public class EmployeeController {
     public ResultBean<Employee> deleteEmployee(@PathVariable Integer employeeID) {
         Employee employee = employeeService.delete(employeeID);
         if (employee == null) {
-            return ResultBean.error(0, NOT_EXIST);
+            return ResultBean.error(ResultBean.ERROR_CODE, NOT_EXIST);
         }
         return ResultBean.success(employee);
     }
