@@ -96,4 +96,25 @@ public class EmployeeServiceTest {
         //then
         assertEquals(employees.get(employees.size() - 1), employee);
     }
+
+    @Test
+    void should_return_employee_when_update_employee_given_employee() {
+        //given
+        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(1, 18, "hello", "male", 1000.0));
+        employees.add(new Employee(2, 18, "hellome", "male", 1000.0));
+        employees.add(new Employee(3, 18, "hellome2", "male", 1000.0));
+        employees.add(new Employee(4, 18, "hellome3", "female", 2000.0));
+        given(employeeRepository.getEmployees()).willReturn(employees);
+        //when
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
+        Employee employee = employeeService.updateEmployee(1,new Employee(23, 18, "alex", "female", 1000.0));
+        //then
+        assertEquals(employees.get(0).getAge(), employee.getAge());
+        assertEquals(employees.get(0).getName(), employee.getName());
+        assertEquals(employees.get(0).getGender(), employee.getGender());
+    }
+
+
 }
