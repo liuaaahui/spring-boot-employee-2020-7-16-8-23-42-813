@@ -40,7 +40,7 @@ public class EmployeeServiceTest {
         given(employeeRepository.getEmployees()).willReturn(employees);
         //when
         EmployeeService employeeService = new EmployeeService(employeeRepository);
-        List<Employee> employeeList = employeeService.getEmployees(1, 2);
+        List<Employee> employeeList = employeeService.getEmployees(1, 2,null);
         //then
         assertIterableEquals(employeeList, employees.subList(0, 2));
     }

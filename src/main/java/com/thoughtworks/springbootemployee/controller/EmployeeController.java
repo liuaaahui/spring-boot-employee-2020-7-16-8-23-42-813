@@ -1,14 +1,15 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
+import com.thoughtworks.springbootemployee.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author XUAL7
@@ -21,18 +22,19 @@ public class EmployeeController {
     private static final String SUCCESS = "success";
     public static final String EMPLOYEE_NOT_FOUND = "employee not found";
     public static final String CREATION_FAILED = "Creation failed";
+    public final EmployeeService employeeService;
+
+    @Autowired
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
-        List<Employee> result = EmployeeRepository.employees;
-        if (gender != null) {
-            result = result.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
-        }
-        if (page == null || pageSize == null) {
-            return ResultBean.success(result);
-        }
-        return ResultBean.success(result.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList()));
+        List<Employee> result = gender == null ? null : employeeService.getEmployees(gender);
+        return ResultBean.success((page == null || pageSize == null) ? result : employeeService.getEmployees(page, pageSize, result));
     }
 
     @GetMapping("/{employeeID}")
