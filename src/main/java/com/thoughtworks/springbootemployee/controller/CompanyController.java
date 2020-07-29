@@ -4,12 +4,16 @@ import com.thoughtworks.springbootemployee.data.CompanyData;
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author XUAL7
+ */
 @RestController
 @RequestMapping("/companies")
 public class CompanyController {
@@ -19,6 +23,7 @@ public class CompanyController {
     private static final String COMPANY_NOT_FIND = "company not find";
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Company>> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
         if (page == null || pageSize == null) {
             return ResultBean.success(CompanyData.companies);
@@ -27,11 +32,13 @@ public class CompanyController {
     }
 
     @GetMapping("/{companyID}")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<Company> getCompany(@PathVariable Integer companyID) {
         return ResultBean.success(findCompany(companyID));
     }
 
     @GetMapping("/{companyID}/employees")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployee(@PathVariable Integer companyID) {
         return ResultBean.success(CompanyData.companies.stream()
                 .filter(company -> company.getId().equals(companyID))
@@ -40,6 +47,7 @@ public class CompanyController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResultBean<Company> addCompany(@RequestBody Company company) {
         if (company.getId() != null) {
             return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
@@ -49,6 +57,7 @@ public class CompanyController {
     }
 
     @PutMapping("/{companyID}")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<Company> updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
         Company companyInDatabase = findCompany(companyID);
         if (companyInDatabase == CompanyData.emptyCompany) {
@@ -61,6 +70,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{companyID}")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<Boolean> deleteCompany(@PathVariable Integer companyID) {
         Company company = findCompany(companyID);
         if (company == CompanyData.emptyCompany) {

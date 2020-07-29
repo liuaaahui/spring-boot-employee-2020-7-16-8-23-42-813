@@ -3,6 +3,7 @@ package com.thoughtworks.springbootemployee.controller;
 import com.thoughtworks.springbootemployee.data.EmployeeData;
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
@@ -22,6 +23,7 @@ public class EmployeeController {
     public static final String CREATION_FAILED = "Creation failed";
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
         List<Employee> result = EmployeeData.employees;
         if (gender != null) {
@@ -34,6 +36,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{employeeID}")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<Employee> getEmployee(@PathVariable Integer employeeID) {
         return ResultBean.success(findEmployee(employeeID));
     }
@@ -46,6 +49,7 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResultBean<Employee> addEmployee(@RequestBody Employee employee) {
         if (employee.getId() != null) {
             return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
@@ -55,6 +59,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{employeeID}")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<Employee> updateEmployee(@PathVariable Integer employeeID, @RequestBody Employee employee) {
         Employee employeeInDatabase = findEmployee(employeeID);
         if (employeeInDatabase == EmployeeData.emptyEmployee) {
@@ -65,6 +70,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{employeeID}")
+    @ResponseStatus(HttpStatus.OK)
     public ResultBean<Boolean> deleteEmployee(@PathVariable Integer employeeID) {
         Employee employee = findEmployee(employeeID);
         if (employee == EmployeeData.emptyEmployee) {
