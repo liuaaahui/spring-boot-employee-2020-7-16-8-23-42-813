@@ -89,4 +89,29 @@ public class CompanyServiceTest {
 //        then
         assertEquals(companies.get(0), foundCompany);
     }
+
+    @Test
+    public void should_return_employee_when_get_company_employee_then_given_id() {
+        //given
+        CompanyRepository employeeRepository = mock(CompanyRepository.class);
+        List<Company> companies = new ArrayList<>();
+        ArrayList<Employee> employeesOfOOCL = new ArrayList<>();
+        ArrayList<Employee> employeesOfBlibli = new ArrayList<>();
+        companies.add(new Company(1, "oocl"));
+        companies.add(new Company(2, "blibli"));
+        employeesOfOOCL.add(new Employee(1001, 18, "zach", "male", 1000.0));
+        employeesOfOOCL.add(new Employee(1002, 17, "alex", "male", 1000.0));
+        employeesOfBlibli.add(new Employee(1003, 19, "zach1", "male", 1000.0));
+        employeesOfBlibli.add(new Employee(1004, 18, "zach2", "male", 1000.0));
+
+        companies.get(0).setEmployees(employeesOfOOCL);
+        companies.get(1).setEmployees(employeesOfBlibli);
+        given(employeeRepository.getCompanies()).willReturn(companies);
+//        when
+        CompanyService companyService = new CompanyService(employeeRepository);
+        List<Employee> employees = companyService.getEmployees(1);
+
+//        then
+        assertIterableEquals(companies.get(0).getEmployees(), employees);
+    }
 }
