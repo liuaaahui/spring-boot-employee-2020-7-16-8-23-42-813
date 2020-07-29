@@ -65,7 +65,9 @@ public class EmployeeController {
         if (employeeInDatabase == EmployeeData.emptyEmployee) {
             return ResultBean.error(ResultBean.ERROR_CODE, EMPLOYEE_NOT_FOUND);
         }
+        Integer id = employeeInDatabase.getId();
         employeeInDatabase = employee;
+        employeeInDatabase.setId(id);
         return ResultBean.success(employeeInDatabase);
     }
 
