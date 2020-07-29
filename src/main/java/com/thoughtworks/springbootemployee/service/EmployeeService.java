@@ -48,4 +48,10 @@ public class EmployeeService {
         employee.setSalary(updatedEmployee.getSalary());
         return employee;
     }
+
+    public Employee delete(Integer id) {
+        Employee employee = getEmployee(id);
+        employeeRepository.getEmployees().remove(employee);
+        return employee;
+    }
 }
