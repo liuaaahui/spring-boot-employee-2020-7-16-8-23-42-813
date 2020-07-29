@@ -34,6 +34,9 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
         List<Employee> result = gender == null ? null : employeeService.getEmployees(gender);
+        if (result == null) {
+            result = employeeService.getEmployees();
+        }
         return ResultBean.success((page == null || pageSize == null) ? result : employeeService.getEmployees(page - 1, pageSize).getContent());
     }
 
