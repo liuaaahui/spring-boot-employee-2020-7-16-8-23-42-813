@@ -1,6 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.data.CompanyData;
+import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
@@ -26,9 +26,9 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Company>> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
         if (page == null || pageSize == null) {
-            return ResultBean.success(CompanyData.companies);
+            return ResultBean.success(CompanyRepository.companies);
         }
-        return ResultBean.success(CompanyData.companies.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList()));
+        return ResultBean.success(CompanyRepository.companies.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList()));
     }
 
     @GetMapping("/{companyID}")
@@ -40,10 +40,10 @@ public class CompanyController {
     @GetMapping("/{companyID}/employees")
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployee(@PathVariable Integer companyID) {
-        return ResultBean.success(CompanyData.companies.stream()
+        return ResultBean.success(CompanyRepository.companies.stream()
                 .filter(company -> company.getId().equals(companyID))
                 .findFirst()
-                .orElse(CompanyData.emptyCompany).getEmployees());
+                .orElse(CompanyRepository.emptyCompany).getEmployees());
     }
 
     @PostMapping
@@ -52,7 +52,7 @@ public class CompanyController {
         if (company.getId() != null) {
             return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
         }
-        CompanyData.addCompany(company);
+        CompanyRepository.addCompany(company);
         return ResultBean.success(company);
     }
 
@@ -60,7 +60,7 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Company> updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
         Company companyInDatabase = findCompany(companyID);
-        if (companyInDatabase == CompanyData.emptyCompany) {
+        if (companyInDatabase == CompanyRepository.emptyCompany) {
             return ResultBean.error(ResultBean.ERROR_CODE, COMPANY_NOT_FIND);
         }
         if (companyInfo.getCompanyName() != null) {
@@ -73,17 +73,17 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Boolean> deleteCompany(@PathVariable Integer companyID) {
         Company company = findCompany(companyID);
-        if (company == CompanyData.emptyCompany) {
+        if (company == CompanyRepository.emptyCompany) {
             return ResultBean.error(ResultBean.ERROR_CODE, COMPANY_NOT_FIND);
         }
-        CompanyData.companies.remove(company);
+        CompanyRepository.companies.remove(company);
         return ResultBean.success();
     }
 
     public Company findCompany(Integer ID) {
-        return CompanyData.companies.stream()
+        return CompanyRepository.companies.stream()
                 .filter(company -> company.getId().equals(ID))
                 .findFirst()
-                .orElse(CompanyData.emptyCompany);
+                .orElse(CompanyRepository.emptyCompany);
     }
 }

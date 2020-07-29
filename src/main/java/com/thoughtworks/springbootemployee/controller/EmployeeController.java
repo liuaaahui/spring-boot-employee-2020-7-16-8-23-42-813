@@ -1,6 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.data.EmployeeData;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class EmployeeController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
-        List<Employee> result = EmployeeData.employees;
+        List<Employee> result = EmployeeRepository.employees;
         if (gender != null) {
             result = result.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
         }
@@ -42,10 +42,10 @@ public class EmployeeController {
     }
 
     public Employee findEmployee(Integer ID) {
-        return EmployeeData.employees.stream()
+        return EmployeeRepository.employees.stream()
                 .filter(employee -> employee.getId().equals(ID))
                 .findFirst()
-                .orElse(EmployeeData.emptyEmployee);
+                .orElse(EmployeeRepository.emptyEmployee);
     }
 
     @PostMapping
@@ -54,7 +54,7 @@ public class EmployeeController {
         if (employee.getId() != null) {
             return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
         }
-        boolean success = EmployeeData.addEmployee(employee);
+        boolean success = EmployeeRepository.addEmployee(employee);
         return success ? ResultBean.success(employee) : ResultBean.error(0, CREATION_FAILED);
     }
 
@@ -62,7 +62,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Employee> updateEmployee(@PathVariable Integer employeeID, @RequestBody Employee employee) {
         Employee employeeInDatabase = findEmployee(employeeID);
-        if (employeeInDatabase == EmployeeData.emptyEmployee) {
+        if (employeeInDatabase == EmployeeRepository.emptyEmployee) {
             return ResultBean.error(ResultBean.ERROR_CODE, EMPLOYEE_NOT_FOUND);
         }
         Integer id = employeeInDatabase.getId();
@@ -75,10 +75,10 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Boolean> deleteEmployee(@PathVariable Integer employeeID) {
         Employee employee = findEmployee(employeeID);
-        if (employee == EmployeeData.emptyEmployee) {
+        if (employee == EmployeeRepository.emptyEmployee) {
             return ResultBean.error(ResultBean.ERROR_CODE, EMPLOYEE_NOT_FOUND);
         }
-        EmployeeData.employees.remove(employee);
+        EmployeeRepository.employees.remove(employee);
         return ResultBean.success();
     }
 

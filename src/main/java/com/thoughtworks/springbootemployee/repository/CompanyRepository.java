@@ -1,12 +1,14 @@
-package com.thoughtworks.springbootemployee.data;
+package com.thoughtworks.springbootemployee.repository;
 
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompanyData {
+@Repository
+public class CompanyRepository {
     public static List<Company> companies = new ArrayList<>();
     public static Company emptyCompany;
     private static transient int CompanyIDCount;

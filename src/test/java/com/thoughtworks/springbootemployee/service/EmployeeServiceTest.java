@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -19,9 +20,9 @@ public class EmployeeServiceTest {
         List<Employee> employees = new ArrayList<>();
         employees.add(new Employee(1, 18, "hello", "male", 1000.0));
         employees.add(new Employee(2, 18, "hellome", "male", 1000.0));
-        given(employeeRepository.getEmployees()).willReturn(employees));
+        given(employeeRepository.getEmployees()).willReturn(employees);
         //when
-        EmployeeService employeeService = new EmployeeService();
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
         List<Employee> employeeList = employeeService.getEmployees();
         //then
         assertIterableEquals(employeeList, employees);
