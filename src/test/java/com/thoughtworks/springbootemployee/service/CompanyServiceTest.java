@@ -22,7 +22,8 @@ public class CompanyServiceTest {
         List<Company> companies = new ArrayList<>();
         ArrayList<Employee> employeesOfOOCL = new ArrayList<>();
         ArrayList<Employee> employeesOfBlibli = new ArrayList<>();
-
+        companies.add(new Company(1, "oocl"));
+        companies.add(new Company(2, "blibli"));
         employeesOfOOCL.add(new Employee(1001, 18, "zach", "male", 1000.0));
         employeesOfOOCL.add(new Employee(1002, 17, "alex", "male", 1000.0));
         employeesOfBlibli.add(new Employee(1003, 19, "zach1", "male", 1000.0));
@@ -30,7 +31,7 @@ public class CompanyServiceTest {
 
         companies.get(0).setEmployees(employeesOfOOCL);
         companies.get(1).setEmployees(employeesOfBlibli);
-        given(companies.getCompanies()).willReturn(companies);
+        given(employeeRepository.getCompanies()).willReturn(companies);
 //        when
         CompanyService companyService = new CompanyService(employeeRepository);
         List<Company> foundCompanies = companyService.getCompanies();

@@ -15,7 +15,7 @@ public class CompanyRepository {
 
     public static final int DEFAULT_COMPANY_COUNT = 2;
 
-    static {
+    {
         companies.add(new Company(1, "oocl"));
         companies.add(new Company(2, "blibli"));
 
@@ -36,5 +36,9 @@ public class CompanyRepository {
     public static synchronized void addCompany(Company company) {
         company.setId(++CompanyIDCount);
         companies.add(company);
+    }
+
+    public List<Company> getCompanies() {
+        return null;
     }
 }
