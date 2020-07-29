@@ -37,4 +37,10 @@ public class CompanyService {
         companyRepository.getCompanies().add(company);
         return company;
     }
+
+    public Company updateCompany(Integer id, Company updatedCompany) {
+        Company company = getCompany(id);
+        company.setCompanyName(updatedCompany.getCompanyName());
+        return company;
+    }
 }
