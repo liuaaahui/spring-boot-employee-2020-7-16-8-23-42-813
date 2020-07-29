@@ -35,7 +35,8 @@ public class CompanyController {
         if (page == null || pageSize == null) {
             return ResultBean.success(companyService.getCompanies());
         }
-        return ResultBean.success(companyService.getCompanies(page, pageSize).getContent());
+        //Count at 0 at database
+        return ResultBean.success(companyService.getCompanies(page - 1, pageSize).getContent());
     }
 
     @GetMapping("/{companyID}")

@@ -34,7 +34,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
         List<Employee> result = gender == null ? null : employeeService.getEmployees(gender);
-        return ResultBean.success((page == null || pageSize == null) ? result : employeeService.getEmployees(page, pageSize).getContent());
+        return ResultBean.success((page == null || pageSize == null) ? result : employeeService.getEmployees(page - 1, pageSize).getContent());
     }
 
     @GetMapping("/{employeeID}")
