@@ -11,14 +11,19 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     @Autowired
-    CompanyService(CompanyRepository companyRepository){
-        this.companyRepository=companyRepository;
+    CompanyService(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
+
     public List<Company> getCompanies() {
         return companyRepository.getCompanies();
     }
 
     public List<Company> getCompanies(Integer page, Integer pageSize) {
-        return companyRepository.getCompanies().stream().skip((page-1)*pageSize).limit(pageSize).collect(Collectors.toList());
+        return companyRepository.getCompanies().stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+    }
+
+    public Company getCompany(Integer id) {
+        return companyRepository.getCompanies().stream().filter(company -> company.getId().equals(id)).findFirst().orElse(null);
     }
 }
