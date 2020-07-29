@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.data.CompanyData;
+import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.web.bind.annotation.*;
@@ -18,55 +19,55 @@ public class CompanyController {
     private static final String COMPANY_NOT_FIND = "company not find";
 
     @GetMapping
-    public List<Company> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
+    public ResultBean<List<Company>> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
         if (page == null || pageSize == null) {
-            return CompanyData.companies;
+            return ResultBean.success(CompanyData.companies);
         }
-        return CompanyData.companies.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+        return ResultBean.success(CompanyData.companies.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList()));
     }
 
     @GetMapping("/{companyID}")
-    public Company getCompany(@PathVariable Integer companyID) {
-        return findCompany(companyID);
+    public ResultBean<Company> getCompany(@PathVariable Integer companyID) {
+        return ResultBean.success(findCompany(companyID));
     }
 
     @GetMapping("/{companyID}/employees")
-    public List<Employee> getEmployee(@PathVariable Integer companyID) {
-        return CompanyData.companies.stream()
+    public ResultBean<List<Employee>> getEmployee(@PathVariable Integer companyID) {
+        return ResultBean.success(CompanyData.companies.stream()
                 .filter(company -> company.getId().equals(companyID))
                 .findFirst()
-                .orElse(CompanyData.emptyCompany).getEmployees();
+                .orElse(CompanyData.emptyCompany).getEmployees());
     }
 
     @PostMapping
-    public String addCompany(@RequestBody Company company) {
+    public ResultBean<Company> addCompany(@RequestBody Company company) {
         if (company.getId() != null) {
-            return ID_COULD_NOT_BE_SET;
+            return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
         }
         CompanyData.addCompany(company);
-        return SUCCESS;
+        return ResultBean.success(company);
     }
 
     @PutMapping("/{companyID}")
-    public String updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
+    public ResultBean<Company> updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
         Company companyInDatabase = findCompany(companyID);
         if (companyInDatabase == CompanyData.emptyCompany) {
-            return COMPANY_NOT_FIND;
+            return ResultBean.error(ResultBean.ERROR_CODE, COMPANY_NOT_FIND);
         }
         if (companyInfo.getCompanyName() != null) {
             companyInDatabase.setCompanyName(companyInfo.getCompanyName());
         }
-        return SUCCESS;
+        return ResultBean.success(companyInDatabase);
     }
 
     @DeleteMapping("/{companyID}")
-    public String deleteCompany(@PathVariable Integer companyID) {
+    public ResultBean<Boolean> deleteCompany(@PathVariable Integer companyID) {
         Company company = findCompany(companyID);
         if (company == CompanyData.emptyCompany) {
-            return COMPANY_NOT_FIND;
+            return ResultBean.error(ResultBean.ERROR_CODE, COMPANY_NOT_FIND);
         }
         CompanyData.companies.remove(company);
-        return SUCCESS;
+        return ResultBean.success();
     }
 
     public Company findCompany(Integer ID) {

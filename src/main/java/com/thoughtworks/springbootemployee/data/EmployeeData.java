@@ -10,7 +10,7 @@ public class EmployeeData {
     public static Employee emptyEmployee;
     private static transient int EmployeeIDCount;
 
-    public static final int DEFAULT_COMPANY_COUNT = 4;
+    public static final int DEFAULT_COMPANY_COUNT = 1004;
 
     static {
         employees.add(new Employee(1001, 18, "zach", "male", 1000.0));
@@ -21,8 +21,9 @@ public class EmployeeData {
         EmployeeIDCount = DEFAULT_COMPANY_COUNT;
     }
 
-    public static void addEmployee(Employee employee) {
+    public static boolean addEmployee(Employee employee) {
         employee.setId(++EmployeeIDCount);
-        employees.add(employee);
+        return employees.add(employee);
+
     }
 }
