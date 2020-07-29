@@ -28,7 +28,13 @@ public class CompanyService {
         return companyRepository.getCompanies().stream().filter(company -> company.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public List<Employee> getEmployees(Integer id){
+    public List<Employee> getEmployees(Integer id) {
         return companyRepository.getCompanies().stream().filter(company -> company.getId().equals(id)).findFirst().orElse(null).getEmployees();
+    }
+
+    public Company addCompany(Company company) {
+        company.setId(companyRepository.getCompanies().size() + 1);
+        companyRepository.getCompanies().add(company);
+        return company;
     }
 }
