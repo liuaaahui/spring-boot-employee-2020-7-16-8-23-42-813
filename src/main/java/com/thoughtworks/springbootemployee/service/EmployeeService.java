@@ -39,4 +39,13 @@ public class EmployeeService {
         employeeRepository.getEmployees().add(employee);
         return employee;
     }
+
+    public Employee updateEmployee(int id, Employee updatedEmployee) {
+        Employee employee = this.getEmployee(id);
+        employee.setName(updatedEmployee.getName());
+        employee.setAge(updatedEmployee.getAge());
+        employee.setGender(updatedEmployee.getGender());
+        employee.setSalary(updatedEmployee.getSalary());
+        return employee;
+    }
 }
