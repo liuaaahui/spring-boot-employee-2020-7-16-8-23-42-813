@@ -2,7 +2,6 @@ package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,7 @@ public class EmployeeController {
     private static final String SUCCESS = "success";
     public static final String EMPLOYEE_NOT_FOUND = "employee not found";
     public static final String CREATION_FAILED = "Creation failed";
+    public static final String NOT_EXIST = "not exist";
     public final EmployeeService employeeService;
 
     @Autowired
@@ -34,54 +34,35 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
         List<Employee> result = gender == null ? null : employeeService.getEmployees(gender);
-        return ResultBean.success((page == null || pageSize == null) ? result : employeeService.getEmployees(page, pageSize, result));
+        return ResultBean.success((page == null || pageSize == null) ? result : employeeService.getEmployees(page, pageSize).getContent());
     }
 
     @GetMapping("/{employeeID}")
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Employee> getEmployee(@PathVariable Integer employeeID) {
-        return ResultBean.success(findEmployee(employeeID));
-    }
-
-    public Employee findEmployee(Integer ID) {
-        return EmployeeRepository.employees.stream()
-                .filter(employee -> employee.getId().equals(ID))
-                .findFirst()
-                .orElse(EmployeeRepository.emptyEmployee);
+        return ResultBean.success(employeeService.getEmployee(employeeID));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResultBean<Employee> addEmployee(@RequestBody Employee employee) {
-        if (employee.getId() != null) {
-            return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
-        }
-        boolean success = EmployeeRepository.addEmployee(employee);
-        return success ? ResultBean.success(employee) : ResultBean.error(0, CREATION_FAILED);
+        return ResultBean.success(employeeService.addEmployee(employee));
     }
 
     @PutMapping("/{employeeID}")
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Employee> updateEmployee(@PathVariable Integer employeeID, @RequestBody Employee employee) {
-        Employee employeeInDatabase = findEmployee(employeeID);
-        if (employeeInDatabase == EmployeeRepository.emptyEmployee) {
-            return ResultBean.error(ResultBean.ERROR_CODE, EMPLOYEE_NOT_FOUND);
-        }
-        Integer id = employeeInDatabase.getId();
-        employeeInDatabase = employee;
-        employeeInDatabase.setId(id);
-        return ResultBean.success(employeeInDatabase);
+        return ResultBean.success(employeeService.updateEmployee(employeeID, employee));
     }
 
     @DeleteMapping("/{employeeID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Boolean> deleteEmployee(@PathVariable Integer employeeID) {
-        Employee employee = findEmployee(employeeID);
-        if (employee == EmployeeRepository.emptyEmployee) {
-            return ResultBean.error(ResultBean.ERROR_CODE, EMPLOYEE_NOT_FOUND);
+    public ResultBean<Employee> deleteEmployee(@PathVariable Integer employeeID) {
+        Employee employee = employeeService.delete(employeeID);
+        if (employee == null) {
+            return ResultBean.error(0, NOT_EXIST);
         }
-        EmployeeRepository.employees.remove(employee);
-        return ResultBean.success();
+        return ResultBean.success(employee);
     }
 
 }

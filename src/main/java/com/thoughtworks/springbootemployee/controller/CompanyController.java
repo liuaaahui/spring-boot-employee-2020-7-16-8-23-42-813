@@ -1,15 +1,15 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import com.thoughtworks.springbootemployee.entity.ResultBean;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.service.CompanyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author XUAL7
@@ -21,29 +21,33 @@ public class CompanyController {
     private static final String ID_COULD_NOT_BE_SET = "ID could not be set";
     private static final String SUCCESS = "success";
     private static final String COMPANY_NOT_FIND = "company not find";
+    public static final String NOT_EXIST = "not exist";
+    private final CompanyService companyService;
+
+    @Autowired
+    CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Company>> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
         if (page == null || pageSize == null) {
-            return ResultBean.success(CompanyRepository.companies);
+            return ResultBean.success(companyService.getCompanies());
         }
-        return ResultBean.success(CompanyRepository.companies.stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList()));
+        return ResultBean.success(companyService.getCompanies(page, pageSize).getContent());
     }
 
     @GetMapping("/{companyID}")
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Company> getCompany(@PathVariable Integer companyID) {
-        return ResultBean.success(findCompany(companyID));
+        return ResultBean.success(companyService.getCompany(companyID));
     }
 
     @GetMapping("/{companyID}/employees")
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<List<Employee>> getEmployee(@PathVariable Integer companyID) {
-        return ResultBean.success(CompanyRepository.companies.stream()
-                .filter(company -> company.getId().equals(companyID))
-                .findFirst()
-                .orElse(CompanyRepository.emptyCompany).getEmployees());
+        return ResultBean.success(companyService.getEmployees(companyID));
     }
 
     @PostMapping
@@ -52,38 +56,23 @@ public class CompanyController {
         if (company.getId() != null) {
             return ResultBean.error(ResultBean.ERROR_CODE, ID_COULD_NOT_BE_SET);
         }
-        CompanyRepository.addCompany(company);
+        companyService.addCompany(company);
         return ResultBean.success(company);
     }
 
     @PutMapping("/{companyID}")
     @ResponseStatus(HttpStatus.OK)
     public ResultBean<Company> updateCompany(@RequestBody Company companyInfo, @PathVariable Integer companyID) {
-        Company companyInDatabase = findCompany(companyID);
-        if (companyInDatabase == CompanyRepository.emptyCompany) {
-            return ResultBean.error(ResultBean.ERROR_CODE, COMPANY_NOT_FIND);
-        }
-        if (companyInfo.getCompanyName() != null) {
-            companyInDatabase.setCompanyName(companyInfo.getCompanyName());
-        }
-        return ResultBean.success(companyInDatabase);
+        return ResultBean.success(companyService.updateCompany(companyID, companyInfo));
     }
 
     @DeleteMapping("/{companyID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Boolean> deleteCompany(@PathVariable Integer companyID) {
-        Company company = findCompany(companyID);
-        if (company == CompanyRepository.emptyCompany) {
-            return ResultBean.error(ResultBean.ERROR_CODE, COMPANY_NOT_FIND);
+    public ResultBean<Company> deleteCompany(@PathVariable Integer companyID) {
+        Company company = companyService.deleteCompany(companyID);
+        if (company == null) {
+            return ResultBean.error(0, NOT_EXIST);
         }
-        CompanyRepository.companies.remove(company);
-        return ResultBean.success();
-    }
-
-    public Company findCompany(Integer ID) {
-        return CompanyRepository.companies.stream()
-                .filter(company -> company.getId().equals(ID))
-                .findFirst()
-                .orElse(CompanyRepository.emptyCompany);
+        return ResultBean.success(company);
     }
 }

@@ -1,11 +1,16 @@
 package com.thoughtworks.springbootemployee.model;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String companyName;
     private Integer employeesNumber;
+    @OneToMany
     private List<Employee> employees;
 
     public Company(Integer id, String companyName) {
