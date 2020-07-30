@@ -144,5 +144,12 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$.data.companyName").value("alibabaaaaaaa"));
     }
 
-    
+    @Test
+    void should_return_boolean_when_delete_company_given_id() throws Exception {
+        //when then
+        mockMvc.perform(delete("/companies/" + companyId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"));
+    }
 }
