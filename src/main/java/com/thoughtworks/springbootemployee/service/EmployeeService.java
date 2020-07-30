@@ -65,9 +65,6 @@ public class EmployeeService {
 
     public Employee delete(Integer id) throws NotFoundException {
         Employee employee = getEmployee(id);
-        if (employee == null) {
-            return null;
-        }
         employeeRepository.deleteById(id);
         return employee;
     }

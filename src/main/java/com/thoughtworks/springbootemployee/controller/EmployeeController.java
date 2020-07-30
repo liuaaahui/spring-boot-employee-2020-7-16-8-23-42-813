@@ -57,12 +57,9 @@ public class EmployeeController {
 
     @DeleteMapping("/{employeeID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Employee> deleteEmployee(@PathVariable Integer employeeID) throws NotFoundException {
-        Employee employee = employeeService.delete(employeeID);
-        if (employee == null) {
-            return ResultBean.error(ResultBean.ERROR_CODE, NOT_EXIST);
-        }
-        return ResultBean.success(employee);
+    public ResultBean<Boolean> deleteEmployee(@PathVariable Integer employeeID) throws NotFoundException {
+        employeeService.delete(employeeID);
+        return ResultBean.success();
     }
 
 }
