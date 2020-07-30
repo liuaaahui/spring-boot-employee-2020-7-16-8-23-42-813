@@ -85,6 +85,7 @@ public class CompanyIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("page", String.valueOf(2))
                 .param("pageSize", String.valueOf(1)))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data", hasSize(1)))
@@ -92,4 +93,13 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$.data[0].employees", hasSize(3)));
     }
 
+    @Test
+    void should_return_company_when_get_company_given_id() throws Exception {
+        mockMvc.perform(get("/companies/"+companyId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data.companyName").value("byte"))
+                .andExpect(jsonPath("$.data.employees", hasSize(3)));
+    }
 }
