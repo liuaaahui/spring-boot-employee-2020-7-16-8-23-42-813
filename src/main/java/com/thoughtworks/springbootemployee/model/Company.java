@@ -10,7 +10,7 @@ public class Company {
     private Integer id;
     private String companyName;
     private Integer employeesNumber;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyId")
     private List<Employee> employees;
 
     public Company(Integer id, String companyName) {
