@@ -1,0 +1,82 @@
+package com.thoughtworks.springbootemployee;
+
+import com.thoughtworks.springbootemployee.model.Company;
+import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.repository.CompanyRepository;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class CompanyIntegrationTest {
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private CompanyRepository companyRepository;
+    private Integer companyId;
+    private Integer employeeId;
+
+    @BeforeEach
+    public void before() {
+        Company company = new Company(1, "ali");
+        Employee firstEmployee = new Employee(1, 18, "alex", "male", 1000.0);
+        Employee secondEmployee = new Employee(2, 18, "alex2", "female", 1000.0);
+        Employee thirdEmployee = new Employee(3, 18, "alex3", "male", 1000.0);
+        Company saveCompany = companyRepository.save(company);
+        firstEmployee.setCompanyId(saveCompany.getId());
+        secondEmployee.setCompanyId(saveCompany.getId());
+        thirdEmployee.setCompanyId(saveCompany.getId());
+        companyId = saveCompany.getId();
+        employeeId = employeeRepository.save(firstEmployee).getId();
+        employeeRepository.save(secondEmployee);
+        employeeRepository.save(thirdEmployee);
+
+        Company companyOfByte = new Company(1, "byte");
+        Employee firstEmployeeOfByte = new Employee(1, 18, "alex4", "male", 1000.0);
+        Employee secondEmployeeOfByte = new Employee(2, 18, "alex5", "female", 1000.0);
+        Employee thirdEmployeeOfByte = new Employee(3, 18, "alex6", "male", 1000.0);
+        Company saveCompanyOfByte = companyRepository.save(companyOfByte);
+        firstEmployeeOfByte.setCompanyId(saveCompanyOfByte.getId());
+        secondEmployeeOfByte.setCompanyId(saveCompanyOfByte.getId());
+        thirdEmployeeOfByte.setCompanyId(saveCompanyOfByte.getId());
+        companyId = saveCompanyOfByte.getId();
+        employeeId = employeeRepository.save(firstEmployeeOfByte).getId();
+        employeeRepository.save(secondEmployeeOfByte);
+        employeeRepository.save(thirdEmployeeOfByte);
+    }
+
+    @AfterEach
+    public void after() {
+        companyRepository.deleteAll();
+        employeeRepository.deleteAll();
+        assert companyRepository.findAll().isEmpty();
+        assert employeeRepository.findAll().isEmpty();
+    }
+
+    @Test
+    void should_return_companies_when_get_companies_given_none() throws Exception {
+        //when then
+        mockMvc.perform(get("/companies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].companyName").value("ali"))
+                .andExpect(jsonPath("$.data[0].employees", hasSize(3)));
+    }
+
+
+}
