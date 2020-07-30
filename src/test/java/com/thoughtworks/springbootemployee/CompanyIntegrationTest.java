@@ -78,5 +78,18 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$.data[0].employees", hasSize(3)));
     }
 
+    @Test
+    void should_return_companies_when_get_companies_given_page() throws Exception {
+        //when then
+        mockMvc.perform(get("/companies")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("page", String.valueOf(2))
+                .param("pageSize", String.valueOf(1)))
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].companyName").value("byte"))
+                .andExpect(jsonPath("$.data[0].employees", hasSize(3)));
+    }
 
 }
