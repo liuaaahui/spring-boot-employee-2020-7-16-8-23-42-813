@@ -129,4 +129,20 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.companyName").value("alibaba"));
     }
+
+    @Test
+    void should_return_company_when_update_company_given_company_and_id() throws Exception {
+        //when then
+        mockMvc.perform(put("/companies/" + companyId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"companyName\":\"alibabaaaaaaa\"\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data.companyName").value("alibabaaaaaaa"));
+    }
+
+    
 }
