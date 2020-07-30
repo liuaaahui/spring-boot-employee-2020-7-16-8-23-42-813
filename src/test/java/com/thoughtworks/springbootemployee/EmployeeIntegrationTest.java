@@ -118,4 +118,16 @@ public class EmployeeIntegrationTest {
                 .andExpect(jsonPath("$.data[0].gender").value("female"));
     }
 
+    @Test
+    void should_return_employees_when_get_employees_given_gender() throws Exception {
+        //when then
+        mockMvc.perform(get("/employees")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("gender", "female"))
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].name").value("alex2"))
+                .andExpect(jsonPath("$.data[0].gender").value("female"));
+    }
 }
