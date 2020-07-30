@@ -1,5 +1,6 @@
 package com.thoughtworks.springbootemployee.service;
 
+import com.thoughtworks.springbootemployee.exception.NotFoundException;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void should_return_employee_when_get_employee_given_id() {
+    void should_return_employee_when_get_employee_given_id() throws NotFoundException {
         //given
         EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
         Employee employee = new Employee(1, 18, "hello", "male", 1000.0);
@@ -98,7 +99,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void should_return_employee_when_delete_employee_given_employee_id() {
+    void should_return_employee_when_delete_employee_given_employee_id() throws NotFoundException {
         //given
         EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
         Employee employee = new Employee(23, 18, "alex", "female", 1000.0);

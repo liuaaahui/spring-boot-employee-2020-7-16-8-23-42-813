@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.entity.ResultBean;
+import com.thoughtworks.springbootemployee.exception.NotFoundException;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Employee> getEmployee(@PathVariable Integer employeeID) {
+    public ResultBean<Employee> getEmployee(@PathVariable Integer employeeID) throws NotFoundException {
         return ResultBean.success(employeeService.getEmployee(employeeID));
     }
 
@@ -56,7 +57,7 @@ public class EmployeeController {
 
     @DeleteMapping("/{employeeID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Employee> deleteEmployee(@PathVariable Integer employeeID) {
+    public ResultBean<Employee> deleteEmployee(@PathVariable Integer employeeID) throws NotFoundException {
         Employee employee = employeeService.delete(employeeID);
         if (employee == null) {
             return ResultBean.error(ResultBean.ERROR_CODE, NOT_EXIST);

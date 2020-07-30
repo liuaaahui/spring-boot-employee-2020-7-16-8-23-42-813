@@ -1,5 +1,6 @@
 package com.thoughtworks.springbootemployee.service;
 
+import com.thoughtworks.springbootemployee.exception.NotFoundException;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
+    public static final String EMPLOYEE_NOT_FOUND = "employee not found";
     private final EmployeeRepository employeeRepository;
 
     @Autowired
@@ -30,8 +32,12 @@ public class EmployeeService {
         return employeeRepository.findAllByGender(gender);
     }
 
-    public Employee getEmployee(Integer id) {
-        return employeeRepository.findById(id).orElse(null);
+    public Employee getEmployee(Integer id) throws NotFoundException {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            throw new NotFoundException(EMPLOYEE_NOT_FOUND);
+        }
+        return employee;
     }
 
     public Employee addEmployee(Employee employee) {
@@ -43,7 +49,7 @@ public class EmployeeService {
         return employeeRepository.save(updatedEmployee);
     }
 
-    public Employee delete(Integer id) {
+    public Employee delete(Integer id) throws NotFoundException {
         Employee employee = getEmployee(id);
         if (employee == null) {
             return null;
