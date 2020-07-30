@@ -78,6 +78,7 @@ public class EmployeeIntegrationTest {
 
     @Test
     void should_return_employee_when_update_employee_given_employee_and_id() throws Exception {
+        //when then
         mockMvc.perform(put("/employees/"+employeeId)
                 .contentType(MediaType.APPLICATION_JSON).content("{\n" +
                 "    \"age\":18,\n" +
@@ -87,5 +88,14 @@ public class EmployeeIntegrationTest {
                 "}")).andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.data.name").value("spy"))
                 .andExpect(jsonPath("$.data.gender").value("female"));
+    }
+
+    @Test
+    void should_return_true_when_delete_employee_given_id() throws Exception {
+        //when then
+        mockMvc.perform(delete("/employees/"+employeeId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"));
     }
 }
