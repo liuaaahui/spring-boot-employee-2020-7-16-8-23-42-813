@@ -13,8 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,14 +27,21 @@ public class EmployeeIntegrationTest {
     @Autowired
     private CompanyRepository companyRepository;
     private Integer companyId;
+    private Integer employeeId;
     @BeforeEach
     public void before() {
         Company company = new Company(1, "ali");
-        Employee employee = new Employee(1, 18, "alex", "male", 1000.0);
+        Employee firstEmployee = new Employee(1, 18, "alex", "male", 1000.0);
+        Employee secondEmployee = new Employee(2, 18, "alex2", "female", 1000.0);
+        Employee thirdEmployee = new Employee(3, 18, "alex3", "male", 1000.0);
         Company saveCompany = companyRepository.save(company);
-        employee.setCompanyId(saveCompany.getId());
+        firstEmployee.setCompanyId(saveCompany.getId());
+        secondEmployee.setCompanyId(saveCompany.getId());
+        thirdEmployee.setCompanyId(saveCompany.getId());
         companyId = saveCompany.getId();
-        employeeRepository.save(employee);
+        employeeId = employeeRepository.save(firstEmployee).getId();
+        employeeRepository.save(secondEmployee);
+        employeeRepository.save(thirdEmployee);
     }
 
     @AfterEach
@@ -66,6 +72,19 @@ public class EmployeeIntegrationTest {
                         "    \"gender\":\"female\",\n" +
                         "    \"companyId\":" + this.companyId + "\n" +
                         "}")).andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.data.name").value("spy"))
+                .andExpect(jsonPath("$.data.gender").value("female"));
+    }
+
+    @Test
+    void should_return_employee_when_update_employee_given_employee_and_id() throws Exception {
+        mockMvc.perform(put("/employees/"+employeeId)
+                .contentType(MediaType.APPLICATION_JSON).content("{\n" +
+                "    \"age\":18,\n" +
+                "    \"name\":\"spy\",\n" +
+                "    \"gender\":\"female\",\n" +
+                "    \"companyId\":" + this.companyId + "\n" +
+                "}")).andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.data.name").value("spy"))
                 .andExpect(jsonPath("$.data.gender").value("female"));
     }
