@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,7 +72,9 @@ public class EmployeeIntegrationTest {
                         "    \"name\":\"spy\",\n" +
                         "    \"gender\":\"female\",\n" +
                         "    \"companyId\":" + this.companyId + "\n" +
-                        "}")).andExpect(jsonPath("$.code").value(1))
+                        "}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.data.name").value("spy"))
                 .andExpect(jsonPath("$.data.gender").value("female"));
     }
@@ -79,13 +82,15 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_employee_when_update_employee_given_employee_and_id() throws Exception {
         //when then
-        mockMvc.perform(put("/employees/"+employeeId)
+        mockMvc.perform(put("/employees/" + employeeId)
                 .contentType(MediaType.APPLICATION_JSON).content("{\n" +
-                "    \"age\":18,\n" +
-                "    \"name\":\"spy\",\n" +
-                "    \"gender\":\"female\",\n" +
-                "    \"companyId\":" + this.companyId + "\n" +
-                "}")).andExpect(jsonPath("$.code").value(1))
+                        "    \"age\":18,\n" +
+                        "    \"name\":\"spy\",\n" +
+                        "    \"gender\":\"female\",\n" +
+                        "    \"companyId\":" + this.companyId + "\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.data.name").value("spy"))
                 .andExpect(jsonPath("$.data.gender").value("female"));
     }
@@ -93,9 +98,24 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_true_when_delete_employee_given_id() throws Exception {
         //when then
-        mockMvc.perform(delete("/employees/"+employeeId))
+        mockMvc.perform(delete("/employees/" + employeeId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.message").value("success"));
     }
+
+    @Test
+    void should_return_employees_when_get_employees_given_page() throws Exception {
+        //when then
+        mockMvc.perform(get("/employees")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("page", String.valueOf(2))
+                .param("pageSize", String.valueOf(1)))
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].name").value("alex2"))
+                .andExpect(jsonPath("$.data[0].gender").value("female"));
+    }
+
 }
