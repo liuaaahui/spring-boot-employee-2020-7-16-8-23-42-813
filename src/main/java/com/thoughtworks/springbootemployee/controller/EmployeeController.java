@@ -29,7 +29,7 @@ public class EmployeeController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) {
+    public ResultBean<List<Employee>> getEmployees(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize, @PathParam("gender") String gender) throws NotFoundException {
         List<Employee> result = gender == null ? null : employeeService.getEmployees(gender);
         if (result == null) {
             result = employeeService.getEmployees();

@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class EmployeeService {
     public static final String EMPLOYEE_NOT_FOUND = "employee not found";
+    public static final String NO_EMPLOYEE = "no employee";
+    public static final String NO_QUALIFIED_EMPLOYEES = "no qualified employees";
     private final EmployeeRepository employeeRepository;
 
     @Autowired
@@ -20,16 +22,28 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<Employee> getEmployees() {
-        return employeeRepository.findAll();
+    public List<Employee> getEmployees() throws NotFoundException {
+        List<Employee> employees = employeeRepository.findAll();
+        if (employees.isEmpty()) {
+            throw new NotFoundException(NO_EMPLOYEE);
+        }
+        return employees;
     }
 
-    public Page<Employee> getEmployees(Integer page, Integer pageSize) {
-        return employeeRepository.findAll(PageRequest.of(page, pageSize));
+    public Page<Employee> getEmployees(Integer page, Integer pageSize) throws NotFoundException {
+        Page<Employee> employees = employeeRepository.findAll(PageRequest.of(page, pageSize));
+        if (employees.isEmpty()) {
+            throw new NotFoundException(NO_EMPLOYEE);
+        }
+        return employees;
     }
 
-    public List<Employee> getEmployees(String gender) {
-        return employeeRepository.findAllByGender(gender);
+    public List<Employee> getEmployees(String gender) throws NotFoundException {
+        List<Employee> employees = employeeRepository.findAllByGender(gender);
+        if (employees.isEmpty()) {
+            throw new NotFoundException(NO_QUALIFIED_EMPLOYEES);
+        }
+        return employees;
     }
 
     public Employee getEmployee(Integer id) throws NotFoundException {

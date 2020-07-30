@@ -1,10 +1,12 @@
 package com.thoughtworks.springbootemployee.service;
 
+import com.thoughtworks.springbootemployee.exception.NotFoundException;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.mock;
 
 public class CompanyServiceTest {
     @Test
-    public void should_return_companies_when_get_companies_given_none() {
+    public void should_return_companies_when_get_companies_given_none() throws NotFoundException {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         List<Company> companies = new ArrayList<>();
@@ -45,22 +47,26 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_companies_when_get_companies_given_pages() {
+    public void should_return_companies_when_get_companies_given_pages() throws NotFoundException {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
-        given(employeeRepository.findAll(any(Pageable.class))).willReturn(Page.empty());
+        List<Company> companies = new ArrayList<>();
+        companies.add(new Company());
+        companies.add(new Company());
+        Page<Company> companyPage = new PageImpl<>(companies);
+        given(employeeRepository.findAll(any(Pageable.class))).willReturn(companyPage);
 //        when
         CompanyService companyService = new CompanyService(employeeRepository);
         Page<Company> foundCompanies = companyService.getCompanies(2, 1);
 
         //todo
 //        then
-        assertEquals(Page.empty(), foundCompanies);
+        assertIterableEquals(companyPage, foundCompanies);
     }
 
 
     @Test
-    public void should_return_company_when_get_company_given_id() {
+    public void should_return_company_when_get_company_given_id() throws NotFoundException {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = new Company(1, "hello");
@@ -73,11 +79,12 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_employee_when_get_company_employee_given_id() {
+    public void should_return_employee_when_get_company_employee_given_id() throws NotFoundException {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = mock(Company.class);
         List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee());
         given(employeeRepository.findById(anyInt())).willReturn(Optional.of(company));
         given(company.getEmployees()).willReturn(employees);
 //        when
@@ -118,7 +125,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_company_when_delete_company_given_id() {
+    public void should_return_company_when_delete_company_given_id() throws NotFoundException {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = new Company();

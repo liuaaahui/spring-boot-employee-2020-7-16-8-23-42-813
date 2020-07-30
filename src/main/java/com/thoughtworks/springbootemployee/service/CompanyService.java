@@ -1,5 +1,6 @@
 package com.thoughtworks.springbootemployee.service;
 
+import com.thoughtworks.springbootemployee.exception.NotFoundException;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
@@ -9,8 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class CompanyService {
+    public static final String NO_COMPANY_FOUND = "no company found";
+    public static final String COMPANY_NOT_FOUND = "company not found";
+    public static final String NO_EMPLOYEE = "no employee";
     private final CompanyRepository companyRepository;
 
     @Autowired
@@ -19,22 +25,37 @@ public class CompanyService {
     }
 
 
-    public List<Company> getCompanies() {
-        return companyRepository.findAll();
+    public List<Company> getCompanies() throws NotFoundException {
+        List<Company> companies = companyRepository.findAll();
+        if (companies.isEmpty()) {
+            throw new NotFoundException(NO_COMPANY_FOUND);
+        }
+        return companies;
     }
 
-    public Page<Company> getCompanies(Integer page, Integer pageSize) {
-        return companyRepository.findAll(PageRequest.of(page, pageSize));
+    public Page<Company> getCompanies(Integer page, Integer pageSize) throws NotFoundException {
+        Page<Company> companies = companyRepository.findAll(PageRequest.of(page, pageSize));
+        if (companies.isEmpty()) {
+            throw new NotFoundException(COMPANY_NOT_FOUND);
+        }
+        return companies;
     }
 
-    public Company getCompany(Integer id) {
-        return companyRepository.findById(id).orElse(null);
+    public Company getCompany(Integer id) throws NotFoundException {
+        Optional<Company> company = companyRepository.findById(id);
+        if (!company.isPresent()) {
+            throw new NotFoundException(COMPANY_NOT_FOUND);
+        }
+        return company.get();
     }
 
-    public List<Employee> getEmployees(Integer id) {
+    public List<Employee> getEmployees(Integer id) throws NotFoundException {
         Company company = companyRepository.findById(id).orElse(null);
         if (company == null) {
-            return null;
+            throw new NotFoundException(COMPANY_NOT_FOUND);
+        }
+        if (company.getEmployees().isEmpty()) {
+            throw new NotFoundException(NO_EMPLOYEE);
         }
         return company.getEmployees();
     }
@@ -48,11 +69,8 @@ public class CompanyService {
         return companyRepository.save(updatedCompany);
     }
 
-    public Company deleteCompany(Integer id) {
+    public Company deleteCompany(Integer id) throws NotFoundException {
         Company company = getCompany(id);
-        if (company == null) {
-            return null;
-        }
         companyRepository.deleteById(id);
         return company;
     }

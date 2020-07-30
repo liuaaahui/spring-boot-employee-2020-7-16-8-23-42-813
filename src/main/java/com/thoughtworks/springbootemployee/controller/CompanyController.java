@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.entity.ResultBean;
+import com.thoughtworks.springbootemployee.exception.NotFoundException;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.CompanyService;
@@ -29,7 +30,7 @@ public class CompanyController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<List<Company>> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) {
+    public ResultBean<List<Company>> getCompanies(@PathParam("page") Integer page, @PathParam("pageSize") Integer pageSize) throws NotFoundException {
         if (page == null || pageSize == null) {
             return ResultBean.success(companyService.getCompanies());
         }
@@ -39,13 +40,13 @@ public class CompanyController {
 
     @GetMapping("/{companyID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Company> getCompany(@PathVariable Integer companyID) {
+    public ResultBean<Company> getCompany(@PathVariable Integer companyID) throws NotFoundException {
         return ResultBean.success(companyService.getCompany(companyID));
     }
 
     @GetMapping("/{companyID}/employees")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<List<Employee>> getEmployee(@PathVariable Integer companyID) {
+    public ResultBean<List<Employee>> getEmployee(@PathVariable Integer companyID) throws NotFoundException {
         return ResultBean.success(companyService.getEmployees(companyID));
     }
 
@@ -67,7 +68,7 @@ public class CompanyController {
 
     @DeleteMapping("/{companyID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Company> deleteCompany(@PathVariable Integer companyID) {
+    public ResultBean<Company> deleteCompany(@PathVariable Integer companyID) throws NotFoundException {
         Company company = companyService.deleteCompany(companyID);
         if (company == null) {
             return ResultBean.error(ResultBean.ERROR_CODE, NOT_EXIST);

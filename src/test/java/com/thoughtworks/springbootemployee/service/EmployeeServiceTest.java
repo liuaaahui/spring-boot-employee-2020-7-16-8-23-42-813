@@ -5,13 +5,15 @@ import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -19,7 +21,7 @@ import static org.mockito.Mockito.mock;
 public class EmployeeServiceTest {
 
     @Test
-    public void should_return_employees_when_get_employees_given_none() {
+    public void should_return_employees_when_get_employees_given_none() throws NotFoundException {
         //given
         EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
         List<Employee> employees = new ArrayList<>();
@@ -34,19 +36,22 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void should_return_employees_when_get_employees_given_page_pageSize() {
+    void should_return_employees_when_get_employees_given_page_pageSize() throws NotFoundException {
         //given
         EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
-        given(employeeRepository.findAll(any(Pageable.class))).willReturn(Page.empty());
+        List<Employee> employeeList = new ArrayList<>();
+        employeeList.add(new Employee());
+        Page<Employee> employees = new PageImpl<>(employeeList);
+        given(employeeRepository.findAll(any(Pageable.class))).willReturn(employees);
         //when
         EmployeeService employeeService = new EmployeeService(employeeRepository);
-        Page<Employee> employees = employeeService.getEmployees(1, 2);
+        Page<Employee> employeesFound = employeeService.getEmployees(1, 2);
         //then
-        assertNotNull(employees);
+        assertEquals(employees, employeesFound);
     }
 
     @Test
-    void should_return_employees_when_get_employees_given_gender() {
+    void should_return_employees_when_get_employees_given_gender() throws NotFoundException {
         //given
         EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
         List<Employee> employees = new ArrayList<>();
