@@ -95,11 +95,24 @@ public class CompanyIntegrationTest {
 
     @Test
     void should_return_company_when_get_company_given_id() throws Exception {
-        mockMvc.perform(get("/companies/"+companyId))
+        //when then
+        mockMvc.perform(get("/companies/" + companyId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.companyName").value("byte"))
                 .andExpect(jsonPath("$.data.employees", hasSize(3)));
+    }
+
+    @Test
+    void should_return_employees_when_get_company_employees_given_id() throws Exception {
+        //when then
+        mockMvc.perform(get("/companies/" + companyId+"/employees"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data", hasSize(3)))
+                .andExpect(jsonPath("$.data[0].name").value("alex4"))
+                .andExpect(jsonPath("$.data[0].gender").value("male"));
     }
 }
