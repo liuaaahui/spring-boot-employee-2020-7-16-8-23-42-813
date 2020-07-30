@@ -68,11 +68,8 @@ public class CompanyController {
 
     @DeleteMapping("/{companyID}")
     @ResponseStatus(HttpStatus.OK)
-    public ResultBean<Company> deleteCompany(@PathVariable Integer companyID) throws NotFoundException {
-        Company company = companyService.deleteCompany(companyID);
-        if (company == null) {
-            return ResultBean.error(ResultBean.ERROR_CODE, NOT_EXIST);
-        }
-        return ResultBean.success(company);
+    public ResultBean<Boolean> deleteCompany(@PathVariable Integer companyID) throws NotFoundException {
+        companyService.deleteCompany(companyID);
+        return ResultBean.success();
     }
 }
