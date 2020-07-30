@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -107,12 +107,26 @@ public class CompanyIntegrationTest {
     @Test
     void should_return_employees_when_get_company_employees_given_id() throws Exception {
         //when then
-        mockMvc.perform(get("/companies/" + companyId+"/employees"))
+        mockMvc.perform(get("/companies/" + companyId + "/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(1))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data", hasSize(3)))
                 .andExpect(jsonPath("$.data[0].name").value("alex4"))
                 .andExpect(jsonPath("$.data[0].gender").value("male"));
+    }
+
+    @Test
+    void should_return_company_when_add_company_given_company() throws Exception {
+        //when then
+        mockMvc.perform(post("/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"companyName\":\"alibaba\"\n" +
+                        "}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.code").value(1))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data.companyName").value("alibaba"));
     }
 }
