@@ -94,9 +94,7 @@ public class EmployeeServiceTest {
         EmployeeService employeeService = new EmployeeService(employeeRepository);
         Employee employeeFound = employeeService.updateEmployee(1, employee);
         //then
-        assertEquals(employee.getAge(), employee.getAge());
-        assertEquals(employee.getName(), employee.getName());
-        assertEquals(employee.getGender(), employee.getGender());
+        assertEquals(employee, employeeFound);
     }
 
     @Test

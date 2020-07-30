@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 
 public class CompanyServiceTest {
     @Test
-    public void should_return_companies_when_get_companies_then_given_none() {
+    public void should_return_companies_when_get_companies_given_none() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         List<Company> companies = new ArrayList<>();
@@ -45,7 +45,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_companies_when_get_companies_then_given_pages() {
+    public void should_return_companies_when_get_companies_given_pages() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         given(employeeRepository.findAll(any(Pageable.class))).willReturn(Page.empty());
@@ -53,13 +53,14 @@ public class CompanyServiceTest {
         CompanyService companyService = new CompanyService(employeeRepository);
         Page<Company> foundCompanies = companyService.getCompanies(2, 1);
 
+        //todo
 //        then
         assertEquals(Page.empty(), foundCompanies);
     }
 
 
     @Test
-    public void should_return_company_when_get_company_then_given_id() {
+    public void should_return_company_when_get_company_given_id() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = new Company(1, "hello");
@@ -72,7 +73,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_employee_when_get_company_employee_then_given_id() {
+    public void should_return_employee_when_get_company_employee_given_id() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = mock(Company.class);
@@ -87,9 +88,9 @@ public class CompanyServiceTest {
         assertEquals(employees, employeesFound);
     }
 
-
+    //todo rename
     @Test
-    public void should_return_company_when_add_company_then_given_company() {
+    public void should_return_company_when_add_company_given_company() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = new Company();
@@ -103,7 +104,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_company_when_update_company_then_given_company() {
+    public void should_return_company_when_update_company_given_company() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = new Company();
@@ -117,7 +118,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void should_return_company_when_delete_company_then_given_id() {
+    public void should_return_company_when_delete_company_given_id() {
         //given
         CompanyRepository employeeRepository = mock(CompanyRepository.class);
         Company company = new Company();
