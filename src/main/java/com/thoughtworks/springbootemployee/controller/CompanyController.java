@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/companies")
 public class CompanyController {
 
+
     private static final String ID_COULD_NOT_BE_SET = "ID could not be set";
     public static final String NOT_EXIST = "not exist";
     private final CompanyService companyService;
