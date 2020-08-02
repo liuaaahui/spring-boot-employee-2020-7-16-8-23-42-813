@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.mapper;
 
 import com.thoughtworks.springbootemployee.dto.CompanyRequest;
+import com.thoughtworks.springbootemployee.dto.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Company;
 
 public class CompanyMapper {
@@ -11,5 +12,14 @@ public class CompanyMapper {
         company.setEmployees(companyRequest.getEmployees());
         company.setEmployeesNumber(companyRequest.getEmployeesNumber());
         return company;
+    }
+
+    public CompanyResponse toResponse(Company company) {
+        CompanyResponse companyResponse = new CompanyResponse();
+        companyResponse.setId(company.getId());
+        companyResponse.setCompanyName(company.getCompanyName());
+        companyResponse.setEmployeesNumber(company.getEmployeesNumber());
+        companyResponse.setEmployees(company.getEmployees());
+        return companyResponse;
     }
 }
