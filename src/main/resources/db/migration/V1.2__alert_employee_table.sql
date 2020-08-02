@@ -1,1 +1,1 @@
-alter table employee add CONSTRAINT employee_ibfk_1 foreign key(companyId) references company(id)
+alter table employee add CONSTRAINT employee_ibfk_1 foreign key(company_id) references company(id);
